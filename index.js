@@ -1,44 +1,44 @@
 const mineflayer = require('mineflayer');
 
-const botOptions = {
+const config = {
   host: 'Xulvex.aternos.me',
-  port: 23072, // Make sure this matches your current Aternos port
-  username: 'Adreon_9854',
-  version: '1.21.4'
+  port: 23072,
+  username: 'Adreon_9854'
 };
 
-const BOT_PASSWORD = 'YourBotPassword123'; // Change this to whatever password you want
-
 function createBot() {
-  console.log('[*] Connecting bot to Aternos...');
-  const bot = mineflayer.createBot(botOptions);
+  console.log('[*] Connecting bot to server...');
+
+  const bot = mineflayer.createBot({
+    host: config.host,
+    port: config.port,
+    username: config.username,
+    version: '1.21.4'
+  });
 
   bot.on('spawn', () => {
-    console.log(`[+] Bot '${bot.username}' connected successfully!`);
-    
-    // Send register and login commands immediately after spawning
-    setTimeout(() => {
-      bot.chat(`/register ${BOT_PASSWORD} ${BOT_PASSWORD}`);
-      bot.chat(`/login ${BOT_PASSWORD}`);
-    }, 1000);
+    console.log(`[+] Bot '${bot.username}' joined successfully!`);
 
-    // Anti-AFK look rotation every 15 seconds
     setInterval(() => {
-      if (bot && bot.entity) {
-        const yaw = Math.random() * Math.PI * 2 - Math.PI;
+      if (bot.entity) {
+        const yaw = Math.random() * Math.PI * 2;
         const pitch = (Math.random() - 0.5) * Math.PI;
         bot.look(yaw, pitch, true);
       }
     }, 15000);
   });
 
-  bot.on('end', () => {
-    console.log('[!] Disconnected. Reconnecting in 15 seconds...');
-    setTimeout(createBot, 15000);
+  bot.on('kicked', (reason) => {
+    console.log(`[-] Kicked from server: ${reason}`);
   });
 
   bot.on('error', (err) => {
-    console.error('[!] Error:', err.message);
+    console.error(`[!] Connection error: ${err.message}`);
+  });
+
+  bot.on('end', () => {
+    console.log('[!] Disconnected. Reconnecting in 10 seconds...');
+    setTimeout(createBot, 10000);
   });
 }
 
