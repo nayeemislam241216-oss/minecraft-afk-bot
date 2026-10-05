@@ -2,10 +2,12 @@ const mineflayer = require('mineflayer');
 
 const botOptions = {
   host: 'Xulvex.aternos.me',
-  port: 23072,             // Update this port if Aternos changes it
+  port: 23072, // Make sure this matches your current Aternos port
   username: 'Adreon_9854',
   version: '1.21.4'
 };
+
+const BOT_PASSWORD = 'YourBotPassword123'; // Change this to whatever password you want
 
 function createBot() {
   console.log('[*] Connecting bot to Aternos...');
@@ -14,6 +16,12 @@ function createBot() {
   bot.on('spawn', () => {
     console.log(`[+] Bot '${bot.username}' connected successfully!`);
     
+    // Send register and login commands immediately after spawning
+    setTimeout(() => {
+      bot.chat(`/register ${BOT_PASSWORD} ${BOT_PASSWORD}`);
+      bot.chat(`/login ${BOT_PASSWORD}`);
+    }, 1000);
+
     // Anti-AFK look rotation every 15 seconds
     setInterval(() => {
       if (bot && bot.entity) {
