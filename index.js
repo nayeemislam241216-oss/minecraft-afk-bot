@@ -1,44 +1,59 @@
 const mineflayer = require('mineflayer');
 
-const config = {
+const botOptions = {
   host: 'Xulvex.aternos.me',
-  port: 23072,
-  username: 'Adreon_9854'
+  port: 23072, // Update this port if Aternos changes it
+  username: 'Adreon_9854',
+  version: '1.21.4'
 };
 
-function createBot() {
-  console.log('[*] Connecting bot to server...');
+const BOT_PASSWORD = 'Qwaskcv123098_'; // Update if using AuthMe
 
-  const bot = mineflayer.createBot({
-    host: config.host,
-    port: config.port,
-    username: config.username,
-    version: '1.21.4'
-  });
+function createBot() {
+  console.log('[*] Connecting bot to Aternos...');
+  const bot = mineflayer.createBot(botOptions);
 
   bot.on('spawn', () => {
-    console.log(`[+] Bot '${bot.username}' joined successfully!`);
+    console.log(`[+] Bot '${bot.username}' connected successfully!`);
+    
+    // Auto-login / register if server uses AuthMe
+    setTimeout(() => {
+      bot.chat(`/register ${BOT_PASSWORD} ${BOT_PASSWORD}`);
+      bot.chat(`/login ${BOT_PASSWORD}`);
+    }, 1000);
 
+    // Active Anti-AFK Routine (Walks, jumps, sneaks, and looks around)
     setInterval(() => {
-      if (bot.entity) {
-        const yaw = Math.random() * Math.PI * 2;
-        const pitch = (Math.random() - 0.5) * Math.PI;
-        bot.look(yaw, pitch, true);
-      }
-    }, 15000);
-  });
+      if (!bot || !bot.entity) return;
 
-  bot.on('kicked', (reason) => {
-    console.log(`[-] Kicked from server: ${reason}`);
-  });
+      // 1. Look in a random direction
+      const yaw = Math.random() * Math.PI * 2 - Math.PI;
+      const pitch = (Math.random() - 0.5) * Math.PI;
+      bot.look(yaw, pitch, true);
 
-  bot.on('error', (err) => {
-    console.error(`[!] Connection error: ${err.message}`);
+      // 2. Perform a random physical movement
+      const actions = ['forward', 'back', 'left', 'right'];
+      const randomAction = actions[Math.floor(Math.random() * actions.length)];
+      
+      bot.setControlState(randomAction, true);
+      if (Math.random() > 0.5) bot.setControlState('jump', true);
+      if (Math.random() > 0.5) bot.setControlState('sneak', true);
+
+      // Stop moving after 1 second
+      setTimeout(() => {
+        bot.clearControlStates();
+      }, 1000);
+
+    }, 10000); // Triggers every 10 seconds
   });
 
   bot.on('end', () => {
-    console.log('[!] Disconnected. Reconnecting in 10 seconds...');
-    setTimeout(createBot, 10000);
+    console.log('[!] Disconnected. Reconnecting in 15 seconds...');
+    setTimeout(createBot, 15000);
+  });
+
+  bot.on('error', (err) => {
+    console.error('[!] Error:', err.message);
   });
 }
 
