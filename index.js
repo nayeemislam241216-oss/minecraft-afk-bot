@@ -2,12 +2,12 @@ const mineflayer = require('mineflayer');
 
 const botOptions = {
   host: 'Vynex1.aternos.me',
-  port: 47098, // Update this port whenever Aternos restarts
+  port: 47092, // Update this port whenever Aternos restarts
   username: 'Adreon_9854',
-  version: '1.26.2' // Updated to match your server version
+  version: '1.21.4' // Change to match your server version if needed
 };
 
-const BOT_PASSWORD = 'Qwaskcv123098_'; // Update if using AuthMe
+const BOT_PASSWORD = 'YourBotPassword123'; // Update if using AuthMe
 
 function createBot() {
   console.log('[*] Connecting bot to Aternos...');
@@ -16,7 +16,7 @@ function createBot() {
   bot.on('spawn', () => {
     console.log(`[+] Bot '${bot.username}' connected successfully!`);
     
-    // Explicitly stop any active block digging immediately upon spawning
+    // Explicitly cancel any active block digging immediately upon spawn
     bot.stopDigging();
 
     // Auto-login / register if server uses AuthMe
@@ -29,7 +29,7 @@ function createBot() {
     setInterval(() => {
       if (!bot || !bot.entity) return;
 
-      // Force disable attacking and block digging state
+      // Force block breaking and swinging controls to stay OFF
       bot.setControlState('attack', false);
       bot.stopDigging();
 
@@ -43,7 +43,7 @@ function createBot() {
       const randomAction = actions[Math.floor(Math.random() * actions.length)];
       
       bot.setControlState(randomAction, true);
-      bot.setControlState('sneak', true); // Sneaking keeps movement controlled
+      bot.setControlState('sneak', true); // Sneaking keeps movements small and controlled
 
       if (Math.random() > 0.5) bot.setControlState('jump', true);
 
