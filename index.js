@@ -2,12 +2,12 @@ const mineflayer = require('mineflayer');
 
 const botOptions = {
   host: 'Vynex1.aternos.me',
-  port: 47092, // Update this port whenever Aternos restarts
+  port: 47098, // Update this port whenever Aternos restarts
   username: 'Adreon_9854',
-  version: '1.21.4' // Change to match your server version if needed
+  version: '1.21.4'
 };
 
-const BOT_PASSWORD = 'YourBotPassword123'; // Update if using AuthMe
+const BOT_PASSWORD = 'Qwaskcv123098_'; // Update if using AuthMe
 
 function createBot() {
   console.log('[*] Connecting bot to Aternos...');
@@ -16,7 +16,7 @@ function createBot() {
   bot.on('spawn', () => {
     console.log(`[+] Bot '${bot.username}' connected successfully!`);
     
-    // Explicitly cancel any active block digging immediately upon spawn
+    // Explicitly stop any digging or block interaction upon spawning
     bot.stopDigging();
 
     // Auto-login / register if server uses AuthMe
@@ -25,11 +25,11 @@ function createBot() {
       bot.chat(`/login ${BOT_PASSWORD}`);
     }, 1000);
 
-    // Active Anti-AFK Routine (Walks, jumps, sneaks, and looks around without breaking blocks)
+    // Active Anti-AFK Routine (Look, sneak, jump, and safe movement)
     setInterval(() => {
       if (!bot || !bot.entity) return;
 
-      // Force block breaking and swinging controls to stay OFF
+      // Ensure digging control state is NEVER active
       bot.setControlState('attack', false);
       bot.stopDigging();
 
@@ -38,12 +38,12 @@ function createBot() {
       const pitch = (Math.random() - 0.5) * Math.PI;
       bot.look(yaw, pitch, true);
 
-      // 2. Perform a random physical movement
+      // 2. Safe movement (Sneak, Jump, and subtle movements without breaking blocks)
       const actions = ['forward', 'back', 'left', 'right'];
       const randomAction = actions[Math.floor(Math.random() * actions.length)];
       
       bot.setControlState(randomAction, true);
-      bot.setControlState('sneak', true); // Sneaking keeps movements small and controlled
+      bot.setControlState('sneak', true); // Sneaking reduces movement distance
 
       if (Math.random() > 0.5) bot.setControlState('jump', true);
 
