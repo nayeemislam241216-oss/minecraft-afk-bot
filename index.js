@@ -4,7 +4,7 @@ const botOptions = {
   host: 'Vynex1.aternos.me',
   port: 47098, // Update this port whenever Aternos restarts
   username: 'Adreon_9854',
-  version: '1.21.4'
+  version: false // Auto-detect protocol version to fix mismatch errors
 };
 
 const BOT_PASSWORD = 'YourBotPassword123'; // Update if using AuthMe
@@ -16,7 +16,7 @@ function createBot() {
   bot.on('spawn', () => {
     console.log(`[+] Bot '${bot.username}' connected successfully!`);
     
-    // Explicitly stop any digging or block interaction upon spawning
+    // Stop any active digging
     bot.stopDigging();
 
     // Auto-login / register if server uses AuthMe
@@ -29,30 +29,28 @@ function createBot() {
     setInterval(() => {
       if (!bot || !bot.entity) return;
 
-      // Ensure digging control state is NEVER active
       bot.setControlState('attack', false);
       bot.stopDigging();
 
-      // 1. Look in a random direction
+      // Look in a random direction
       const yaw = Math.random() * Math.PI * 2 - Math.PI;
       const pitch = (Math.random() - 0.5) * Math.PI;
       bot.look(yaw, pitch, true);
 
-      // 2. Safe movement (Sneak, Jump, and subtle movements without breaking blocks)
+      // Safe movement
       const actions = ['forward', 'back', 'left', 'right'];
       const randomAction = actions[Math.floor(Math.random() * actions.length)];
       
       bot.setControlState(randomAction, true);
-      bot.setControlState('sneak', true); // Sneaking reduces movement distance
+      bot.setControlState('sneak', true);
 
       if (Math.random() > 0.5) bot.setControlState('jump', true);
 
-      // Stop moving after 800 milliseconds
       setTimeout(() => {
         bot.clearControlStates();
       }, 800);
 
-    }, 10000); // Triggers every 10 seconds
+    }, 10000);
   });
 
   bot.on('end', () => {
