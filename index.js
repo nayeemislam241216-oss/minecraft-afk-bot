@@ -2,7 +2,7 @@ const mineflayer = require('mineflayer');
 
 const botOptions = {
   host: 'Vynex1.aternos.me',
-  port: 47098, // Update this port whenever Aternos restarts
+  port: 47098, // Update this port if Aternos changes it
   username: 'Adreon_9854',
   version: '1.21.4'
 };
@@ -16,41 +16,33 @@ function createBot() {
   bot.on('spawn', () => {
     console.log(`[+] Bot '${bot.username}' connected successfully!`);
     
-    // Explicitly stop any digging or block interaction upon spawning
-    bot.stopDigging();
-
     // Auto-login / register if server uses AuthMe
     setTimeout(() => {
       bot.chat(`/register ${BOT_PASSWORD} ${BOT_PASSWORD}`);
       bot.chat(`/login ${BOT_PASSWORD}`);
     }, 1000);
 
-    // Active Anti-AFK Routine (Look, sneak, jump, and safe movement)
+    // Active Anti-AFK Routine (Walks, jumps, sneaks, and looks around)
     setInterval(() => {
       if (!bot || !bot.entity) return;
-
-      // Ensure digging control state is NEVER active
-      bot.setControlState('attack', false);
-      bot.stopDigging();
 
       // 1. Look in a random direction
       const yaw = Math.random() * Math.PI * 2 - Math.PI;
       const pitch = (Math.random() - 0.5) * Math.PI;
       bot.look(yaw, pitch, true);
 
-      // 2. Safe movement (Sneak, Jump, and subtle movements without breaking blocks)
+      // 2. Perform a random physical movement
       const actions = ['forward', 'back', 'left', 'right'];
       const randomAction = actions[Math.floor(Math.random() * actions.length)];
       
       bot.setControlState(randomAction, true);
-      bot.setControlState('sneak', true); // Sneaking reduces movement distance
-
       if (Math.random() > 0.5) bot.setControlState('jump', true);
+      if (Math.random() > 0.5) bot.setControlState('sneak', true);
 
-      // Stop moving after 800 milliseconds
+      // Stop moving after 1 second
       setTimeout(() => {
         bot.clearControlStates();
-      }, 800);
+      }, 1000);
 
     }, 10000); // Triggers every 10 seconds
   });
