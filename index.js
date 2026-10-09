@@ -1,8 +1,8 @@
 const mineflayer = require('mineflayer');
 
 const botOptions = {
-  host: 'Vynex1.aternos.me',
-  port: 47098, // Update this port if Aternos changes it
+  host: 'vynex.playserver.pro',
+  port: Vynex, // Update this port if Aternos changes it
   username: 'Adreon_9854',
   version: '1.21.4'
 };
